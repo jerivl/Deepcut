@@ -10,9 +10,9 @@ Team 1145
 
 
 ## Team members:
-* Jarrod (Jerry) Luckenbaugh - 
-* Luz Maria Martinez Lucas
-* Hamza Aamer Bhatti
-* Heriberto Felipe
-* Delia Victoria Trejo
-* Shah Misbahul Huda
+* Jarrod (Jerry) Luckenbaugh [Lead] - jvl170030@utdallas.edu
+* Luz Maria Martinez Lucas [Software] - lmm170230@utdallas.edu
+* Hamza Aamer Bhatti [Software] - hab170130@utdallas.edu
+* Heriberto Felipe [Hardware] - hxf180002@utdallas.edu
+* Delia Victoria Trejo [Software] - dvt170030@utdallas.edu
+* Shah Misbahul Huda [Hardware] - sxh170007@utdallas.edu
