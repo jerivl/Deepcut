@@ -1,6 +1,6 @@
 #Software team instructions
 
-#####TODO: include Anaconda install, venv creation, pip install, and basic Python tutorials
+####TODO: include Anaconda install, venv creation, pip install, and basic Python tutorials
 * Install Python 3.9 from Anaconda and create a virtual environment for this project, if not already done
 * Install libraries using pip and *requirements.txt*
 * Unless otherwise specified: Use Python (.py) files. MATLAB is ok for graphing/analytics, preferably you will learn some plotting library in python (See: matplotlib, seaborn, plotly, etc.)
@@ -8,11 +8,11 @@
 * Do **not** store large datasets in this repo. These files should be sent via Box and stored in a standard format between members, if necessary.
 
 ### Preferred libraries:
-    ... **pathlib** for filepath handling
-    ... **glob** for iterating over files
-    ... **wavy** for audio reading/writing
-    ... **numpy** for general math/data manipulation
-    ... **pytorch** for deep learning
+    * **pathlib** for filepath handling
+    * **glob** for iterating over files
+    * **wavy** for audio reading/writing
+    * **numpy** for general math/data manipulation
+    * **pytorch** for deep learning
 
 ##To contribute:
 2 different folders will contain project code:
@@ -26,7 +26,7 @@
     * Preferably these are given in the form of a jupter notebook (.ipynb)
 
 #Hardware team instructions
-#####TODO: choose hardware design softwares
+####TODO: choose hardware design softwares
 * CAD software chosen:
 * EDA software chosen:
 
