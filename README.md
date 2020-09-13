@@ -11,9 +11,15 @@ Team 1145
 
 
 ##Team members:
-Jarrod (Jerry) Luckenbaugh
-Luz Maria Martinez Lucas
-Hamza Aamer Bhatti
-Heriberto Felipe
-Delia Victoria Trejo
-Shah Misbahul Huda
+
+*Jarrod (Jerry) Luckenbaugh
+
+*Luz Maria Martinez Lucas
+
+*Hamza Aamer Bhatti
+
+*Heriberto Felipe
+
+*Delia Victoria Trejo
+
+*Shah Misbahul Huda
