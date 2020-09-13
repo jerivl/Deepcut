@@ -4,7 +4,7 @@ Example of code style desired
 - Functions denoted with lowercase letters and underscores (funct_one)
 - Classes denoted with uppercase letters and underscores (Class_One)
 - Optimize code for readability
-
+- No naked functions
 
 '''
 
