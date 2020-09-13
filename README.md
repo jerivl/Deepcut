@@ -1,6 +1,6 @@
 # Deepcut
 
-A robot that raps.
+## A robot that raps.
 
 Senior design project FA2020-SP2021 at The University of Texas at Dallas [UTD]
 Team 1145
@@ -10,16 +10,10 @@ Team 1145
 </p>
 
 
-##Team members:
-
-*Jarrod (Jerry) Luckenbaugh
-
-*Luz Maria Martinez Lucas
-
-*Hamza Aamer Bhatti
-
-*Heriberto Felipe
-
-*Delia Victoria Trejo
-
-*Shah Misbahul Huda
+## Team members:
+* Jarrod (Jerry) Luckenbaugh
+* Luz Maria Martinez Lucas
+* Hamza Aamer Bhatti
+* Heriberto Felipe
+* Delia Victoria Trejo
+* Shah Misbahul Huda
