@@ -38,15 +38,15 @@
 *~/cad/* contains the bill of materials and build log that are created throughout the project.
 ### If you are creating a new part, start at step 1. Otherwise, start at step 4.
 1. Create a folder in the *~/cad/* with the convention "00_00_Part_Name"
-    First field is sub-assembly number. This is where the part is going to go.
-    Be sure to include the leading 0's in the part number
-    This also includes models downloaded from the internet
+> First field is sub-assembly number. This is where the part is going to go.
+> Be sure to include the leading 0's in the part number
+> This also includes models downloaded from the internet
 2. Update the bill of materials in *~/cad/* with the sub-assembly, part number, part name, date created, link to part_log, and description
-    See example in bill of materials for reference
-    New subassembly proposals should be discussed during a meeting, or at least over the team chat
+> See example in bill of materials for reference
+> New subassembly proposals should be discussed during a meeting, or at least over the team chat
 3. Fork most recently uploaded version of the part
 4. Name file with the convention "00_00_31-08-2020" and work
-    Fields: (sub-assembly number)_(part number)_**(day)_(month)**_(year)
+> Fields: (sub-assembly number)_(part number)_**(day)_(month)**_(year)
 5. Post new file in *~/cad/##_##_Part_Name/*
 6. Document changes in the part log (posted in the BOM) with your name and upload time
-    See example part in  *~/cad/00_00_Part_Example/* for reference
+> See example part in  *~/cad/00_00_Part_Example/* for reference
