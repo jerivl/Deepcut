@@ -8,13 +8,13 @@
 * Do **not** store large datasets in this repo. These files should be sent via Box and stored in a standard format between members, if necessary.
 
 ### Preferred libraries:
-    > **pathlib** for filepath handling
-    > **glob** for iterating over files
-    > **wavy** for audio reading/writing
-    > **numpy** for general math/data manipulation
-    > **pytorch** for deep learning
+> **pathlib** for filepath handling
+> **glob** for iterating over files
+> **wavy** for audio reading/writing
+> **numpy** for general math/data manipulation
+> **pytorch** for deep learning
 
-##To contribute:
+## To contribute:
 2 different folders will contain project code:
 * *~/scr/* contains system implementation.
     1. Fork the directory to work locally
