@@ -10,9 +10,9 @@
 ### Preferred libraries:
 > **pathlib** for filepath handling
 
-> **glob** for iterating over files
+> **scipy.io.wavfile** for general reading/writing of audio files
 
-> **wavy** for audio reading/writing
+> **wavy** for audio reading in weird encodings
 
 > **numpy** for general math/data manipulation
 
