@@ -1,0 +1,92 @@
+clear all 
+close all
+h = figure;
+axis tight manual;
+out_file = 'facetest2.gif';
+out_vid = 'facetest2.avi';
+out_FPS = 60;
+
+[vocal,Fs] = audioread('alligned_syllables_demo/alligned_syllables_demo2_vocal.wav');
+[audio,Fs] = audioread('alligned_syllables_demo/alligned_syllables_demo2.wav');
+% Trim 1 sec of zeros
+vocal = 0.5.*vocal(1:Fs*4);
+audio = 0.5.*audio(1:Fs*4);
+
+% Take envelope and smooth
+dRC = compressor(-25,10,'AttackTime',0,'ReleaseTime',0);
+% visualize(dRC)
+env = dRC(vocal);
+env = envelope(env);
+env = movmedian(env,1000);
+env = movmean(env,500);
+env = movmean(env,1000);
+
+% Quantize to 4 face positions
+fmvmt = 4.*env./max(env);
+fmvmt = resample(fmvmt,out_FPS,Fs);
+fmvmt = round(fmvmt) + 1;
+fmvmt(fmvmt > 4) = 4;
+
+% Get 4 face positions
+[bank,map]=imread('face_animation/Face 005.gif','frames','all');
+bank = bank(:,:,:,1:4);
+dim  = size(bank);
+% face_frames = zeros([dim(1:end-1),length(env)],class(bank));
+% for i = 1:length(env)
+%     face_frames(:,:,:,i) = bank(:,:,:,fmvmt(i));
+% end
+% face = immovie(face_frames,map);
+% implay(face,out_FPS)
+time = linspace(0,length(fmvmt)/out_FPS,length(fmvmt)*Fs/out_FPS);
+totfmvmt = [];
+videoFWriter = vision.VideoFileWriter(out_vid, 'AudioInputPort',true,'FrameRate',out_FPS)
+for i = 1:length(env)-1
+    
+    tottime = linspace(0,i/out_FPS,i*Fs/out_FPS);
+    totvocal = vocal(1: i*(Fs/out_FPS));
+    totaudio = audio(1: i*(Fs/out_FPS));
+    curface = bank(:,:,:,fmvmt(i));
+    totfmvmt = [totfmvmt, fmvmt(i)*ones(1,Fs/out_FPS)];
+    
+    subplot(2,2,1);
+    hold on
+    plot(tottime,totaudio,'b');
+    xlim([min(time),max(time)]);
+    xlabel('Time(s)')
+    ylabel('Amplitude')
+    title('Audio Output')
+    subplot(2,2,2);
+    imshow(curface,map);
+    title('Face Output')
+    subplot(2,2,3);
+    plot(tottime,totvocal,'b');
+    xlim([min(time),max(time)]);
+    title('Vocal Track Only')
+    xlabel('Time(s)')
+    ylabel('Amplitude')
+    subplot(2,2,4);
+    plot(tottime,totfmvmt,'b');
+    xlim([min(time),max(time)]);
+    xlabel('Time(s)')
+    ylabel('Face Position')
+    title('Face Movement')
+    
+    
+    % Capture the plot as an image 
+    frame = getframe(h);
+    im = frame2im(frame); 
+    [imind,cm] = rgb2ind(im,256); 
+    % Write to the GIF File 
+    if i == 1 
+        imwrite(imind,cm,out_file,'gif', 'Loopcount',inf); 
+    else 
+        imwrite(imind,cm,out_file,'gif','WriteMode','append'); 
+    end 
+    audioframe = audio((i-1)*(Fs/out_FPS)+1: i*(Fs/out_FPS))';
+    videoFWriter(im,audioframe);
+    
+    hold off
+end
+
+release(videoFWriter);
+%plot(vocal);
