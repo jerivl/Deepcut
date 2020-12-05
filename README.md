@@ -9,8 +9,8 @@ Team 1145
 
 ## Senior Design 1 Expo
 We presented a few demos of our current work at the UTD senior design expo. Here's a few highlights.
-[![Face Demo 1 (Prerecorded Speech)](https://j.gifs.com/oVwQkA.gif) width="400"](https://youtu.be/xlmdFCnutfY)
-[![Face Demo 2 (Text to Speech (Tacotron 2) Speech)](https://j.gifs.com/nxvrjP.gif) width="400"](https://youtu.be/T9jrKqjYwAw)
+[<img src="https://j.gifs.com/oVwQkA.gif"> width="400"](https://youtu.be/xlmdFCnutfY)
+[<img src="https://j.gifs.com/nxvrjP.gif"> width="400"](https://youtu.be/T9jrKqjYwAw)
 
 ## Team members:
 * Jarrod (Jerry) Luckenbaugh [Lead] - jvl170030@utdallas.edu
