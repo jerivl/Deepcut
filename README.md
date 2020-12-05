@@ -8,7 +8,7 @@ Senior design project FA2020-SP2021 at The University of Texas at Dallas [UTD]
 Team 1145
 
 ## Senior Design 1 Expo
-We presented a few demos of our current work at the UTD senior design expo. Here's a few highlights. Click any of these .gifs to be sent to a video with audio
+We presented a few demos of our current work at the UTD senior design expo. Here's a few highlights. Click any of these links to hear it in action.
 ### [Face Demo 1 (Prerecorded speech)](https://youtu.be/xlmdFCnutfY)
 [<p align="center"> <img src="https://j.gifs.com/oVwQkA.gif" width="400">  </p>](https://youtu.be/xlmdFCnutfY)
 ### [Face Demo 2 (Speech generated through TTS [Tacotron 2])](https://youtu.be/T9jrKqjYwAw)
