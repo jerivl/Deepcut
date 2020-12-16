@@ -1,7 +1,11 @@
 """
     Modification History:
         Last modification date: December 15, 2020
+<<<<<<< Updated upstream
         Last modification time: 9:35AM
+=======
+        Last modification time: 9:30PM
+>>>>>>> Stashed changes
     Description:
         Create a function that will stretch or compress audio from a wav file to a specified duration.
         The change in pitch that occurs will be ignored.
