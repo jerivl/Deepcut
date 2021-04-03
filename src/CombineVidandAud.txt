@@ -1,0 +1,2 @@
+cd C:\Users\luzma\PycharmProjects\pythonProject\Senior Design
+ffmpeg -i facetest2.mp4 -i Working_with_audio_in_time-Jerry/syl_audio/US114_F60_TG_VSDRC000_Rap_bpm=100_subpb=4_sylLen=0.5_Accapela.wav -c:v copy -c:a aac facetest2_aud.mp4 -shortest
