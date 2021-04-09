@@ -6,11 +6,11 @@
         Create a function that will stretch or compress audio from a wav file to a specified duration,
         while preserving the pitch of the original audio.
     Current inputs:
-        target_duration (int) - duration the audio will be stretched or compressed to
+        target_duration (int) - duration the audio (in seconds) will be stretched or compressed to
         wav_file (str) - wav file location of original audio to be stretched or compressed
         wav_file_new (str) - wav file location where the output audio will be saved
         method (int) - 1: Overlap-Add (OLA)
-                       2: Waveform-Similarity Overlap-Add (WSOLA)
+                       2: Waveform-Similarity Overlap-Add (WSOLA) [PREFERRED]
                        3: Phase Vocoder (PV-TSM)
     Expected output:
         Stretched or compressed audio saved to specified file
@@ -27,7 +27,7 @@ import pytsmod as tsm
 import soundfile as sf
 
 
-def time_stretching(wav_file, wav_file_new, target_duration, method=1):
+def time_stretching(wav_file, wav_file_new, target_duration, method=2):
     data, sample_rate = sf.read(wav_file)
 
     if target_duration > 0:
