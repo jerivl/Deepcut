@@ -51,7 +51,7 @@ function create_face_vid(vocalFile,out_vid)
 
         imshow(curface,map);
 
-        % Capture the plot as an image 
+        % Capture the plot as an image
         frame = getframe(h,[100 75 700 700]);
         im = frame2im(frame);
         videoFWriter(im);

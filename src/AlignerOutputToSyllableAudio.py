@@ -55,7 +55,7 @@ def aligner_to_rap(audio_file, textgrid_file, save_fldr, bpm, subpb=4, sylLen=1)
 
 # if __name__ == '__main__':
 #     # Using textgrid file from Working_with_audio_in_time-Jerry. Change as needed.
-#     textgridFile = 'Working_with_audio_in_time-Jerry\\US114_F60_TG_VSDRC000.TextGrid'
-#     audioFile = 'Working_with_audio_in_time-Jerry\\audio_transcripts\\US114_F60_TG_VSDRC000.wav'
+#     textgridFile = 'Working_with_audio_in_time-Jerry\\speech.TextGrid'
+#     audioFile = 'Working_with_audio_in_time-Jerry\\audio_transcripts\\speech.wav'
 #     saveFldr = 'Working_with_audio_in_time-Jerry\\syl_audio\\'
 #     aligner_to_rap(audioFile, textgridFile, saveFldr, 100, 2, 1.5)
