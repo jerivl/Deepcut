@@ -1,50 +1,34 @@
-clear;
-close all;
+function [vidFile, mixFile] = face_move_envelope(rapFile, beatFile, gifFile)
+    [rapPath,rapName,rapExt] = fileparts(rapFile);
+    [beatPath,beatName,beatExt] = fileparts(beatFile);
+    [gifPath,gifName,gifExt] = fileparts(gifFile);
+    addpath(rapPath, beatPath, gifPath);
 
-% create_face_vid('/home/deepcut/flowtron/results/rapsid0_sigma0.5.wavsid0_sigma0.5.wav_Rap_bpm=100_subpb=4_sylLen=1_Accapela.wav',...
-%     '/home/deepcut/flowtron/results/rap.avi');
-<<<<<<< Updated upstream
-create_face_vid('sid0_sigma0.5.wav_Rap_bpm=100_subpb=4_sylLen=0.5_Accapela.wav','rap.avi');
-mix_beat('sid0_sigma0.5.wav_Rap_bpm=100_subpb=4_sylLen=0.5_Accapela.wav','beat1.wav')
-=======
-create_face_vid('sid0_sigma0.5.wav_Rap_bpm=100_subpb=4_sylLen=0.5_Accapela.wav','rap.mp4');
-mix_beat('sid0_sigma0.5.wav_Rap_bpm=100_subpb=4_sylLen=0.5_Accapela.wav','beat1.wav')
-
-command1 = 'ffmpeg -i "C:/Users/luzma/PycharmProjects/pythonProject/Senior Design/rap.mp4" -i "C:/Users/luzma/PycharmProjects/pythonProject/Senior Design/mix.wav" -c:v copy -c:a aac "C:/Users/luzma/PycharmProjects/pythonProject/Senior Design/done.mp4" -y';
-% command2 = 'ffmpeg -i C:/Users/luzma/PycharmProjects/pythonProject/Senior Design/done.avi C:/Users/luzma/PycharmProjects/pythonProject/Senior Design/done.mp4 -y';
-system(command1);
-% system(command2);
-
-function mix_beat(rapFile, beatFile)
-    [rap, FSr] = audioread(rapFile);
-    [beat, FSb] = audioread(beatFile);
-    rap = resample(rap,441,160);
-    mix = rap + beat(1:length(rap)) / 2;
-    audiowrite('mix.wav',mix,FSb)
+    % create_face_vid('/home/deepcut/flowtron/results/rapsid0_sigma0.5.wavsid0_sigma0.5.wav_Rap_bpm=100_subpb=4_sylLen=1_Accapela.wav',...
+    %     '/home/deepcut/flowtron/results/rap.avi');
+    vidFile = create_face_vid(rapFile, gifFile);
+    mixFile = mix_beat(rapFile, beatFile);
 end
 
->>>>>>> Stashed changes
-
-command1 = 'ffmpeg -i /home/deepcut/deepcut/src/rap.avi -i /home/deepcut/deepcut/src/mix.wav -c:v copy -c:a aac /home/deepcut/deepcut/src/done.avi -y';
-command2 = 'ffmpeg -i /home/deepcut/deepcut/src/done.avi /home/deepcut/deepcut/src/done.mp4 -y';
-system(command1);
-system(command2);
-
-function mix_beat(rapFile, beatFile)
+function [mixFile] = mix_beat(rapFile, beatFile)
     [rap, FSr] = audioread(rapFile);
     [beat, FSb] = audioread(beatFile);
+    [rapPath,rapName,rapExt] = fileparts(rapFile);
+    [beatPath,beatName,beatExt] = fileparts(beatFile);
+    mixFile = fullfile(rapPath, [rapName beatName rapExt]);
     rap = resample(rap,441,160);
     mix = rap + beat(1:length(rap)) / 2;
-    audiowrite('mix.wav',mix,FSb)
+    audiowrite(mixFile,mix,FSb)
 end
 
 
-function create_face_vid(vocalFile,out_vid)
-    h = figure;
+function [vidFile] = create_face_vid(rapFile, gifFile)
+    h =figure('Renderer', 'painters', 'Position', [10 10  900 899], 'visible', 'off') ;
+    axes('Position',[0.1 0.1 0.8 0.8]) % for 720 x 720 output from 900 x 900 figure
     axis tight manual;
     out_FPS = 60;
 
-    [vocal,Fs] = audioread(vocalFile);
+    [vocal,Fs] = audioread(rapFile);
 
     % Take envelope and smooth
     dRC = compressor(-25,10,'AttackTime',0,'ReleaseTime',0);
@@ -62,16 +46,23 @@ function create_face_vid(vocalFile,out_vid)
     fmvmt(fmvmt > 4) = 4;
 
     % Get 4 face positions
-    [bank,map] = imread('Face 005.gif','frames','all');
+    [bank,map] = imread(gifFile,'frames','all');
     bank = bank(:,:,:,1:4);
-    videoFWriter = vision.VideoFileWriter(out_vid,'FrameRate',out_FPS,'FileFormat','AVI');
+    
+    % Define output filename
+    [rapPath,rapName,rapExt] = fileparts(rapFile);
+    [gifPath,gifName,gifExt] = fileparts(gifFile);
+    vidFile = fullfile(rapPath, [rapName '+' gifName '.avi']);
+    
+    % Write video as .avi for later reencoding
+    videoFWriter = vision.VideoFileWriter(vidFile,'FrameRate',out_FPS,'FileFormat','AVI');
     for i = 1:length(fmvmt)
         curface = bank(:,:,:,fmvmt(i));
 
         imshow(curface,map);
 
         % Capture the plot as an image
-        frame = getframe(h,[100 75 700 700]);
+        frame = getframe(gca);
         im = frame2im(frame);
         videoFWriter(im);
     end
