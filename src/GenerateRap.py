@@ -53,7 +53,7 @@ if __name__ == "__main__":
     inference_path = (Path.cwd().parent).joinpath("flowtron","inference.py")
     config_path = (Path.cwd().parent).joinpath("flowtron","config.json")
     flowtron_model = (Path.cwd().parent).joinpath("resource","models","flowtron_ljs.pt")
-    waveglow_model = (Path.cwd().parent).joinpath("resources","models","waveglow_256channels_v5.pt")
+    waveglow_model = (Path.cwd().parent).joinpath("resource","models","waveglow_256channels_v5.pt")
     print(waveglow_model,Path.is_file(flowtron_model))
     if not Path.is_file(flowtron_model):
         raise FileNotFoundError("Ensure that the Flowtron model exists at %s" % str(flowtron_model.parent))
@@ -65,8 +65,11 @@ if __name__ == "__main__":
     # Generate speech
     cmd = 'python %s -c %s -f %s -w %s -t "%s" -i 0' % (inference_path,config_path,flowtron_model,waveglow_model,text)
     print(cmd)
-    os.chdir((Path.cwd().parent).joinpath("flowtron"))
+    src_dir = Path.cwd()
+    flowtron_dir = (Path.cwd().parent).joinpath("flowtron")
+    os.chdir(flowtron_dir)
     os.system(cmd)
+    os.chdir(src_dir)
 
 
     # Set variables for mfa
@@ -74,7 +77,7 @@ if __name__ == "__main__":
     resampled = (Path.cwd().parent).joinpath("flowtron","results","sid0_sigma0.5_r.wav")
     transcript = (Path.cwd().parent).joinpath("flowtron","results","sid0_sigma0.5.txt")
     textgrid_path = (Path.cwd().parent).joinpath("flowtron","results","sid0_sigma0.5.TextGrid")
-    dictionary_path = (Path.cwd().parent).joinpath("resources","librispeech-lexicon.txt")
+    dictionary_path = (Path.cwd().parent).joinpath("resource","librispeech-lexicon.txt")
     corpus_path = wav.parent
 
     # Write transcript
@@ -100,12 +103,20 @@ if __name__ == "__main__":
     bpm = 100
     print(wav, save_fldr)
     
-    aligner_to_rap(wav, (wav.parent).joinpath(textgrid_path.name,"results_"+textgrid_path.name), save_fldr, bpm, sylLen=0.5, method=1)
+    vocal = aligner_to_rap(wav, (wav.parent).joinpath(textgrid_path.name,"results_"+textgrid_path.name), save_fldr, bpm, sylLen=0.5, method=1)
 
-    # TODO: Run MATLAB to generate face
-
-
-    # Re-encode video  
-    cmd = "ffmpeg -i /home/deepcut/deepcut/src/rap.avi -i /home/deepcut/deepcut/src/mix.wav -c:v h264 -c:a aac /home/deepcut/deepcut/src/done.mp4"
+    # Run MATLAB to generate face
+    eng = matlab.engine.start_matlab()
+    print(str(Path.cwd()))
+    eng.cd(str(Path.cwd()))
+    beat = "/home/deepcut/deepcut/resource/beat1.wav"
+    face = "/home/deepcut/deepcut/resource/Face_005.gif"
+    [vidFile, mixFile] = eng.face_move_envelope(str(vocal), str(beat), str(face), nargout=2)
+    vidFile = Path(vidFile)
+    mixFile = Path(mixFile)
+    print(vidFile,mixFile)
+    # Re-encode video with audio
+    cmd = "ffmpeg -i %s -i %s -c:v h264 -c:a aac %s" % (vidFile, mixFile, wav.parent / (str(vidFile.stem) + ".mp4"))
     print(cmd)
+    os.system(cmd)
     

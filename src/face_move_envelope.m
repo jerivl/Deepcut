@@ -1,7 +1,7 @@
 function [vidFile, mixFile] = face_move_envelope(rapFile, beatFile, gifFile)
-    [rapPath,rapName,rapExt] = fileparts(rapFile);
-    [beatPath,beatName,beatExt] = fileparts(beatFile);
-    [gifPath,gifName,gifExt] = fileparts(gifFile);
+    [rapPath,~] = fileparts(rapFile);
+    [beatPath,~] = fileparts(beatFile);
+    [gifPath,~] = fileparts(gifFile);
     addpath(rapPath, beatPath, gifPath);
 
     % create_face_vid('/home/deepcut/flowtron/results/rapsid0_sigma0.5.wavsid0_sigma0.5.wav_Rap_bpm=100_subpb=4_sylLen=1_Accapela.wav',...
@@ -11,10 +11,10 @@ function [vidFile, mixFile] = face_move_envelope(rapFile, beatFile, gifFile)
 end
 
 function [mixFile] = mix_beat(rapFile, beatFile)
-    [rap, FSr] = audioread(rapFile);
+    [rap, ~] = audioread(rapFile);
     [beat, FSb] = audioread(beatFile);
     [rapPath,rapName,rapExt] = fileparts(rapFile);
-    [beatPath,beatName,beatExt] = fileparts(beatFile);
+    [~,beatName,~] = fileparts(beatFile);
     mixFile = fullfile(rapPath, [rapName beatName rapExt]);
     rap = resample(rap,441,160);
     mix = rap + beat(1:length(rap)) / 2;
@@ -50,8 +50,8 @@ function [vidFile] = create_face_vid(rapFile, gifFile)
     bank = bank(:,:,:,1:4);
     
     % Define output filename
-    [rapPath,rapName,rapExt] = fileparts(rapFile);
-    [gifPath,gifName,gifExt] = fileparts(gifFile);
+    [rapPath,rapName,~] = fileparts(rapFile);
+    [~,gifName,~] = fileparts(gifFile);
     vidFile = fullfile(rapPath, [rapName '+' gifName '.avi']);
     
     % Write video as .avi for later reencoding

@@ -69,7 +69,7 @@ def aligner_to_rap(audio_file, textgrid_file, save_fldr, bpm, sylLen=1, method=1
     file_name = save_fldr / (str(audio_file.stem) + '_Rap_bpm=' + str(bpm) + '_method=' + str(method) + \
                 '_sylLen=' + str(sylLen) + '_Accapela.wav')
     wavfile.write(file_name, sample_rate, DATA)
-
+    return file_name
 
 if __name__ == '__main__':
     # Using textgrid file from Working_with_audio_in_time-Jerry. Change as needed.
