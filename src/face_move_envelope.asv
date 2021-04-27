@@ -1,4 +1,7 @@
 function [vidFile, mixFile] = face_move_envelope(rapFile, beatFile, gifFile)
+    rapFile = convertCharsToStrings(rapFile);
+    beatFile = convertCharsToStrings(beatFile);
+    gifFile = convertCharsToStrings(gifFile);
     [rapPath,~] = fileparts(rapFile);
     [beatPath,~] = fileparts(beatFile);
     [gifPath,~] = fileparts(gifFile);
