@@ -64,6 +64,9 @@ if __name__ == "__main__":
         
     text = "I am deepcut the rapper hear my rhymes they hit you like a blaster"
 <<<<<<< HEAD
+<<<<<<< HEAD
+>>>>>>> parent of 360b790 (Parfor to speed face generation)
+=======
 >>>>>>> parent of 360b790 (Parfor to speed face generation)
 =======
 >>>>>>> parent of 360b790 (Parfor to speed face generation)
