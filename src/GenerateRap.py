@@ -48,6 +48,12 @@ if __name__ == "__main__":
     argv[5]: flow choice (method)
     others? maybe path to flowtron and waveglow models. maybe path to MFA if not on linux. also matlab
     '''
+    title = "TRIAL2"
+    text = "Villain get the money like curls They just trying to get a nut like squirrels in this mad world mad world"
+    # text = "This is a test please disregard what I am trying to generate as rap leave mad this world love"
+    bpm = 110
+    sylLen = 0.75
+    method = 5
 
 
     # Set variables for flowtron
@@ -62,10 +68,8 @@ if __name__ == "__main__":
         raise FileNotFoundError("Ensure that the Waveglow model exists at %s" % str(waveglow_model.parent))
 
 
-    title = "TRIAL"
 
     # Split text
-    text = "Villain get the money like curls They just tryin' to get a nut like squirrels in this mad world Land of milk"
     words = text.split(sep=' ')
     w_num = int(len(words))
     rows = int(np.ceil(w_num / 10))
@@ -97,21 +101,38 @@ if __name__ == "__main__":
 
 
         # Set variables for mfa
-        wav = (Path.cwd().parent).joinpath("flowtron","results","sid0_sigma0.5.wav")
+        corpus_path = (Path.cwd().parent).joinpath("MFA",title + "_" + str(text_pnt))
+        if not os.path.isdir(corpus_path):
+            os.mkdir(corpus_path)
+        wav_flowtron = (Path.cwd().parent).joinpath("flowtron","results","sid0_sigma0.5.wav")
         resampled = (Path.cwd().parent).joinpath("flowtron","results","sid0_sigma0.5_r.wav")
-        transcript = (Path.cwd().parent).joinpath("flowtron","results","sid0_sigma0.5.txt")
-        textgrid_path = (Path.cwd().parent).joinpath("flowtron","results","sid0_sigma0.5.TextGrid")
+        wav = (Path.cwd().parent).joinpath("MFA",title + "_" + str(text_pnt),title + "_" + str(text_pnt)+ ".wav")
+        transcript = (Path.cwd().parent).joinpath("MFA",title + "_" + str(text_pnt),title + "_" + str(text_pnt)+ ".txt")
+        textgrid_path = (Path.cwd().parent).joinpath("MFA",title + "_" + str(text_pnt),title + "_" + str(text_pnt)+ ".TextGrid")
+        if os.path.isdir(textgrid_path):
+            cmd = "rm %s/*" % (textgrid_path)
+            print(cmd)
+            os.system(cmd)
+            cmd = "rmdir %s/" % (textgrid_path)
+            print(cmd)
+            os.system(cmd)
+            cmd = "rm %s/*" % (corpus_path)
+            print(cmd)
+            os.system(cmd)
+            log_folder = "/home/deepcut/Documents/MFA/%s" % (title + "_" + str(text_pnt))
+            cmd = "rm -rf %s/*" % (log_folder)
+            print(cmd)
+            os.system(cmd)
+
         dictionary_path = (Path.cwd().parent).joinpath("resource","librispeech-lexicon.txt")
-        corpus_path = wav.parent
 
         # Write transcript
         with open(transcript,'w') as out_txt:
             out_txt.write(text_input)
 
         # Resample audio
-        cmd = "sox %s -b 16 -r 16000 %s" % (wav, resampled)
+        cmd = "sox %s -b 16 -r 16000 %s" % (wav_flowtron, resampled)
         os.system(cmd)
-        os.system("del %s" % wav)
         os.system("mv %s %s" % (resampled,wav))
 
         # Get phoneme timings
@@ -119,28 +140,14 @@ if __name__ == "__main__":
         print(cmd)
         os.system(cmd)
 
-        wav2 = (Path.cwd().parent).joinpath("results",title + "_" + str(text_pnt) + ".wav")
-        cmd = "mv %s %s" % (wav, wav2)
-        print(cmd)
-        os.system(cmd)
-
-        textgrid_save = (wav.parent).joinpath(textgrid_path.name,"results_"+textgrid_path.name)
-        textgrid_save2 = (Path.cwd().parent).joinpath("results", title + "_" + str(text_pnt) + ".TextGrid")
-        cmd = "mv %s %s" % (textgrid_save, textgrid_save2)
-        print(cmd)
-        os.system(cmd)
-
-        wav_list.append(wav2)
-        textgrid_list.append(textgrid_save2)
+        wav_list.append(wav)
+        textgrid_list.append((wav.parent).joinpath(textgrid_path.name,textgrid_path.name))
 
     # Speech to rap transform
     save_fldr = (Path.cwd().parent).joinpath("results")
     # save_fldr = '/home/deepcut/deepcut/scr/rap%s' % os.path.basename(wav)
     # if not os.path.isdir(save_fldr):
     #     os.mkdir(save_fldr)
-    bpm = 100
-    sylLen = 0.5
-    method = 1
     # print(wav, save_fldr)
 
     # vocal = aligner_to_rap(wav, (wav.parent).joinpath(textgrid_path.name,"results_"+textgrid_path.name), save_fldr, bpm, sylLen=0.5, method=1)
