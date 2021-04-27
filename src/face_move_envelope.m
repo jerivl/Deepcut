@@ -23,9 +23,6 @@ end
 
 
 function [vidFile] = create_face_vid(rapFile, gifFile)
-    h =figure('Renderer', 'painters', 'Position', [10 10  900 899], 'visible', 'off') ;
-    axes('Position',[0.1 0.1 0.8 0.8]) % for 720 x 720 output from 900 x 900 figure
-    axis tight manual;
     out_FPS = 60;
 
     [vocal,Fs] = audioread(rapFile);
@@ -55,17 +52,30 @@ function [vidFile] = create_face_vid(rapFile, gifFile)
     vidFile = fullfile(rapPath, [rapName '+' gifName '.avi']);
     
     % Write video as .avi for later reencoding
-    videoFWriter = vision.VideoFileWriter(vidFile,'FrameRate',out_FPS,'FileFormat','AVI');
-    for i = 1:length(fmvmt)
+    ims = zeros(720,720,3,length(fmvmt));
+    try
+        parpool(4);
+    end
+        warning('Not sure if parfor will break')
+    parfor i = 1:length(fmvmt)
+        h =figure('Renderer', 'painters', 'Position', [10 10  900 899], 'visible', 'off') ;
+        a = axes('Position',[0.1 0.1 0.8 0.8]); % for 720 x 720 output from 900 x 900 figure
+        axis tight manual;
+    
         curface = bank(:,:,:,fmvmt(i));
 
         imshow(curface,map);
 
         % Capture the plot as an image
-        frame = getframe(gca);
-        im = frame2im(frame);
-        videoFWriter(im);
+        frame = getframe(a);
+        ims(:,:,:,i) = frame2im(frame);
+        close(h)
     end
-
+    
+    videoFWriter = vision.VideoFileWriter(vidFile,'FrameRate',out_FPS,'FileFormat','AVI');
+    for i = 1:length(fmvmt)
+        im = ims(:,:,:,i);
+        videoFWriter(uint8(im));
+    end
     release(videoFWriter);
 end
