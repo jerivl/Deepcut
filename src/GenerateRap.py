@@ -60,7 +60,7 @@ if __name__ == "__main__":
     if not Path.is_file(waveglow_model):
         raise FileNotFoundError("Ensure that the Waveglow model exists at %s" % str(waveglow_model.parent))
         
-    text = "I am deepcut the rapper hear my rhymes they hit you like a blaster"
+    text = "I am deep cut the rapper hear my rhymes they hit you like a blaster"
 
     # Generate speech
     cmd = 'python %s -c %s -f %s -w %s -t "%s" -i 0' % (inference_path,config_path,flowtron_model,waveglow_model,text)
@@ -116,7 +116,7 @@ if __name__ == "__main__":
     mixFile = Path(mixFile)
     print(vidFile,mixFile)
     # Re-encode video with audio
-    cmd = "ffmpeg -i %s -i %s -c:v h264 -c:a aac %s" % (vidFile, mixFile, wav.parent / (str(vidFile.stem) + ".mp4"))
+    cmd = "ffmpeg -i %s -i %s -c:v h264 -c:a aac %s -y" % (vidFile, mixFile, vocal.parent / (str(vidFile.stem) + ".mp4"))
     print(cmd)
     os.system(cmd)
     
