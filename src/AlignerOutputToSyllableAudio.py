@@ -44,8 +44,10 @@ def aligner_to_rap(audio_file_list, textgrid_file_list, save_fldr, bpm=100, sylL
             finish = 1
             count2 = int(len(syl_files2))
 
+        #print(syl_files)
         for s in range(count,count2):
             syl_file2 = os.path.splitext(syl_files[s])[0]
+            print(syl_files[s],syl_file2)
             syl_file2 = syl_file2 + '_scaled.wav'
             flag = time_stretching(syl_files[s], syl_file2, duration, 2)
             if flag != 1:
@@ -68,12 +70,10 @@ def aligner_to_rap(audio_file_list, textgrid_file_list, save_fldr, bpm=100, sylL
         DATA = np.concatenate([DATA,data_b])
         count = count2
 
-    file_name = audio_file.split(sep='\\')
-    file_name = file_name[-1].split(sep='.')
-    file_name = saveFldr + file_name[0] + '_Rap_bpm=' + str(bpm) + '_method=' + str(method) + \
-                '_sylLen=' + str(sylLen) + '_Accapela.wav'
+    file_name = save_fldr / (str(audio_file.stem) + '_Rap_bpm=' + str(bpm) + '_method=' + str(method) + \
+                '_sylLen=' + str(sylLen) + '_Accapela.wav')
     wavfile.write(file_name, sample_rate, DATA)
-
+    return file_name
 
 if __name__ == '__main__':
     # Using textgrid file from Working_with_audio_in_time-Jerry. Change as needed.

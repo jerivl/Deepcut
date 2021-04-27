@@ -15,21 +15,20 @@
 
 import numpy as np
 from scipy.io import wavfile
-from os.path import basename
 from Issue1_PhonemeToSyllables import get_phoneme, phoneme_to_syllable
 
 
 def split_into_syllables(wav_file, xmin, xmax, save_fldr):
     #file_name = wav_file.split(sep='/')
     #file_name = file_name[-1].split(sep='.')
-    file_name = basename(wav_file)
+    file_name = wav_file.name
 
     [sample_rate, data] = wavfile.read(wav_file)
     length = data.shape[0]/sample_rate
     num_syl = len(xmin)
     save_files = ["" for i in range(num_syl)]
     for s in range(num_syl):
-        save_file = save_fldr + file_name + '_' + str(s) + '.wav'
+        save_file = save_fldr / (str(file_name) + '_' + str(s) + '.wav')
         sample_min = int(xmin[s]*sample_rate)
         sample_max = int(xmax[s]*sample_rate)
         syl_data = data[sample_min:sample_max]

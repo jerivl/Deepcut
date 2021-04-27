@@ -27,13 +27,27 @@
             MATLAB
 """
 
-import os
+import os, sys
+from pathlib import Path
 from AlignerOutputToSyllableAudio import aligner_to_rap
+import matlab.engine
 
 if __name__ == "__main__":
     print(f"Arguments count: {len(sys.argv)}")
     for i, arg in enumerate(sys.argv):
         print(f"Argument {i:>6}: {arg}")
+
+    '''
+    Still trying to figure out args for system
+    argv[0]: "GenerateRap.py"
+    argv[1]: title
+    argv[2]: text
+    argv[3]: bpm
+    argv[4]: syllable length
+    argv[5]: flow choice (method)
+    others? maybe path to flowtron and waveglow models. maybe path to MFA if not on linux. also matlab
+    '''
+    
 
     # Set variables for flowtron
     inference_path = (Path.cwd().parent).joinpath("flowtron","inference.py")
@@ -45,6 +59,7 @@ if __name__ == "__main__":
         raise FileNotFoundError("Ensure that the Flowtron model exists at %s" % str(flowtron_model.parent))
     if not Path.is_file(waveglow_model):
         raise FileNotFoundError("Ensure that the Waveglow model exists at %s" % str(waveglow_model.parent))
+
 
     title = "TRIAL"
 
@@ -113,8 +128,7 @@ if __name__ == "__main__":
         textgrid_list.append(textgrid_save2)
 
     # Speech to rap transform
-
-    save_fldr = '/home/deepcut/deepcut/src/'
+    save_fldr = (Path.cwd().parent).joinpath("results")
     # save_fldr = '/home/deepcut/deepcut/scr/rap%s' % os.path.basename(wav)
     # if not os.path.isdir(save_fldr):
     #     os.mkdir(save_fldr)
@@ -128,6 +142,18 @@ if __name__ == "__main__":
 
     # TODO: Run MATLAB to generate face
 
-    # Re-encode video  
-    cmd = "ffmpeg -i /home/deepcut/deepcut/src/rap.avi -i /home/deepcut/deepcut/src/mix.wav -c:v h264 -c:a aac /home/deepcut/deepcut/src/done.mp4"
+    # Run MATLAB to generate face
+    eng = matlab.engine.start_matlab()
+    print(str(Path.cwd()))
+    eng.cd(str(Path.cwd()))
+    beat = "/home/deepcut/deepcut/resource/beat1.wav"
+    face = "/home/deepcut/deepcut/resource/Face_005.gif"
+    [vidFile, mixFile] = eng.face_move_envelope(str(vocal), str(beat), str(face), nargout=2)
+    vidFile = Path(vidFile)
+    mixFile = Path(mixFile)
+    print(vidFile,mixFile)
+    # Re-encode video with audio
+    cmd = "ffmpeg -i %s -i %s -c:v h264 -c:a aac %s" % (vidFile, mixFile, wav.parent / (str(vidFile.stem) + ".mp4"))
+    print(cmd)
+    os.system(cmd)
     
