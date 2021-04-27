@@ -13,11 +13,14 @@ def aligner_to_rap(audio_file_list, textgrid_file_list, save_fldr, bpm=100, sylL
         [phonemes, start_times, end_times] = get_phoneme(textgrid_file_list[text_pnt])
         [syllables, min_times, max_times] = phoneme_to_syllable(phonemes, start_times, end_times)
         syl_files_t = split_into_syllables(audio_file_list[text_pnt], min_times, max_times, save_fldr)
+        
         syl_files.append(syl_files_t)
+
+    syl_files = [item for sublist in syl_files for item in sublist]
 
     #print(type(syl_files), type(syl_files[0]), type(audio_file))
     syl_files2 = syl_files
-    [sample_rate, data] = wavfile.read(audio_file)
+    [sample_rate, data] = wavfile.read(audio_file_list[0])
     finish = 0
     count = 0
     beat = 0
@@ -46,8 +49,9 @@ def aligner_to_rap(audio_file_list, textgrid_file_list, save_fldr, bpm=100, sylL
 
         #print(syl_files)
         for s in range(count,count2):
+            # print(type(syl_files), type(syl_files[s]), syl_files[s])
             syl_file2 = os.path.splitext(syl_files[s])[0]
-            print(syl_files[s],syl_file2)
+            # print(syl_files[s],syl_file2)
             syl_file2 = syl_file2 + '_scaled.wav'
             flag = time_stretching(syl_files[s], syl_file2, duration, 2)
             if flag != 1:
@@ -70,7 +74,7 @@ def aligner_to_rap(audio_file_list, textgrid_file_list, save_fldr, bpm=100, sylL
         DATA = np.concatenate([DATA,data_b])
         count = count2
 
-    file_name = save_fldr / (str(audio_file.stem) + '_Rap_bpm=' + str(bpm) + '_method=' + str(method) + \
+    file_name = save_fldr / (str(audio_file_list[0].stem) + '_Rap_bpm=' + str(bpm) + '_method=' + str(method) + \
                 '_sylLen=' + str(sylLen) + '_Accapela.wav')
     wavfile.write(file_name, sample_rate, DATA)
     return file_name

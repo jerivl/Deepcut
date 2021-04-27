@@ -31,6 +31,7 @@ import os, sys
 from pathlib import Path
 from AlignerOutputToSyllableAudio import aligner_to_rap
 import matlab.engine
+import numpy as np
 
 if __name__ == "__main__":
     print(f"Arguments count: {len(sys.argv)}")
@@ -64,7 +65,7 @@ if __name__ == "__main__":
     title = "TRIAL"
 
     # Split text
-    text = "Villain get the money like curls They just tryin' to get a nut like squirrels in this mad world Land of milk and honey with the swirls Where reckless naked girls get necklaces of pearls Compliments of the town jeweller Left back now-schooler tryin' to sound cooler On the microphone known as the crown ruler Never lied to ma when we said we found the moolah Five-hundred somethin' dollars layin' right there in the street Huh, now let's try and get somethin' to eat Then he turned four and started flowin' to the poor That's about when he first started going raw Kept the 'dro in the drawer A rhymin' klepto who couldn't go up in the store no more His life is like a folklore legend Why you so stiff? You need to smoke more, bredrin"
+    text = "Villain get the money like curls They just tryin' to get a nut like squirrels in this mad world Land of milk"
     words = text.split(sep=' ')
     w_num = int(len(words))
     rows = int(np.ceil(w_num / 10))
@@ -81,9 +82,12 @@ if __name__ == "__main__":
     wav_list = []
     textgrid_list = []
     for text_pnt in range(len(text_split)):
+        text_input = text_split[text_pnt]
+        text_input = text_input.strip()
+
         # Generate speech
         cmd = 'python %s -c %s -f %s -w %s -t "%s" -i 0' % (inference_path,config_path,flowtron_model,waveglow_model,
-                                                            text_split[text_pnt])
+                                                            text_input)
         print(cmd)
         src_dir = Path.cwd()
         flowtron_dir = (Path.cwd().parent).joinpath("flowtron")
@@ -102,7 +106,7 @@ if __name__ == "__main__":
 
         # Write transcript
         with open(transcript,'w') as out_txt:
-            out_txt.write(text)
+            out_txt.write(text_input)
 
         # Resample audio
         cmd = "sox %s -b 16 -r 16000 %s" % (wav, resampled)
@@ -116,12 +120,14 @@ if __name__ == "__main__":
         os.system(cmd)
 
         wav2 = (Path.cwd().parent).joinpath("results",title + "_" + str(text_pnt) + ".wav")
-        cmd = "copy %s %s" % (wav, wav2)
+        cmd = "mv %s %s" % (wav, wav2)
+        print(cmd)
         os.system(cmd)
 
         textgrid_save = (wav.parent).joinpath(textgrid_path.name,"results_"+textgrid_path.name)
         textgrid_save2 = (Path.cwd().parent).joinpath("results", title + "_" + str(text_pnt) + ".TextGrid")
-        cmd = "copy %s %s" % (textgrid_save, textgrid_save2)
+        cmd = "mv %s %s" % (textgrid_save, textgrid_save2)
+        print(cmd)
         os.system(cmd)
 
         wav_list.append(wav2)
