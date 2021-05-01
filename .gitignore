@@ -4,4 +4,5 @@
 *.mp4
 *.pt
 *.TextGrid
+*.pyc
 flowtron/
