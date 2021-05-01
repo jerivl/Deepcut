@@ -151,5 +151,6 @@ if __name__ == "__main__":
     cmd = "ffmpeg -i %s -i %s -c:v h264 -c:a aac %s -y" % (vidFile, mixFile, vocal.parent / (str(vidFile.stem) + ".mp4"))
     print(cmd)
     os.system(cmd)
-    print("%s" % (vocal.parent / (str(vidFile.stem) + ".mp4")))
+    with open('output.txt','w') as out_txt:
+        out_txt.write(vocal.parent / (str(vidFile.stem) + ".mp4"))
 

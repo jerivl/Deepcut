@@ -1,7 +1,7 @@
 """
     Modification History:
         Date: 4/30/2021
-        Time: 9:15PM
+        Time: 11:00PM
     Description:
         User Interface for the robot. It will allow the user to input their desire lyrics and choose
         what beat, mode, BPM, and syllable length for their rap. The user is also able to increase
@@ -16,10 +16,10 @@
             Range: 60 to 200 and set at 100
         Syllable Length: Slider that user will move to their desired syllable length with an incrementation of 0.01.
             Range: 0.1 to 1.0 and set at 0.5
-        Beats: A drop down with choices from 1 to 4, so the user can chose what beat they would like to use
-        Mode: A drop down with the choices of 1 to 4. The user will chose was mode they would like to choose
+        Beats: A drop down with choices from 1 to 3, so the user can chose what beat they would like to use
+        Mode: A drop down with the choices of 1 to 5. The user will chose was mode they would like to choose
     Current Outputs:
-        String of all of the inputs from the user and Issue2_GetPhonemesList.py (not in UI window)
+        file path of output rap video
     Errors/Warnings to work on:
         Change line 52 to a different script file/location
     NOTES:
@@ -27,10 +27,42 @@
 """
 import tkinter as tk
 import os
+from pathlib import Path
+from SendFinal import sendRPI
+ 
 
 root = tk.Tk()
 root.title("Deepcut")
 root.geometry("600x300")
+
+def remover(inLyrics):
+    # split by spaces
+    words = inLyrics.split(' ')
+    outLyrics = ''
+    for w in range(len(words)):
+        word = str(words[w].strip)
+        if not word.isalpha():
+            new_word = ''
+            for c in range(len(word)):
+                if word[c].isalpha():
+                    new_word = new_word + word[c]
+            word = new_word
+        outLyrics = outLyrics + word + ' '
+    
+    return outLyrics
+
+
+def detector(inLyrics):
+    words = inLyrics.split(' ')
+    invalid = 0
+    w = 0
+    while not invalid:
+        word = str(words[w].strip)
+        if not word.isalpha():
+            invalid = 1
+        w = w + 1
+    
+    return invalid
 
 
 # Displays all of the choices that the user inputs
@@ -41,8 +73,47 @@ def get_entry():
     chosenMode = modeVar.get()
     bpm = bpmSlider.get()
     syllableLength = syllableSlider.get()
+    volume = volumeSlider.get()
     beatMode = int(chosenBeat[-1])
     mode = int(chosenMode[-1])
+
+    # Input validation
+    secret_code = "MAKE ME RAP "
+    if audioTitle[0:12] is secret_code and len(audioTitle) > 12:
+        # Input is a speech file
+        audio_file = Path(audioTitle[12:len(audioTitle)])
+        extension = audio_file.suffix
+        # Check if file exists
+        if not Path.is_file(audio_file) or extension != Path('.wav'):
+            error_message = 'The path specified for the audio file does not exist or is not a .wav file'
+            output.config(text=error_message)
+        else:
+            # Check if transcript has any special characters
+            if detector(lyrics):
+                error_message = 'The lyrics specified for the audio file contain special characters or numbers'
+                output.config(text=error_message)
+            else:
+                # Run rap generation
+                cmd = 'python GenerateRap_UserSpeech.py "%s" "%s" %d %d %d %f %f' % (str(audio_file), lyrics, mode, beatMode, bpm, syllableLength, volume) 
+                os.system(cmd)
+                with open('output.txt','r') as out_txt:
+                    output_file = out_txt.read()
+                output.config(text=output_file)
+                sendRPI(output_file)
+    else:
+        # Input is rap lyrics
+        # Check if transcript has any special characters
+        lyrics = remover(lyrics)
+        print(lyrics)
+        title = audioTitle.replace(" ", "_")
+        # Run rap generation
+        cmd = 'python GenerateRap.py "%s" "%s" %d %d %d %f %f' % (title, lyrics, mode, beatMode, bpm, syllableLength, volume) 
+        os.system(cmd)
+        with open('output.txt','r') as out_txt:
+            output_file = out_txt.read()
+        output.config(text=output_file)
+        sendRPI(output_file)
+        
 
     # add command here add user input as arguements for other scripts
     # Change path for script
@@ -51,13 +122,13 @@ def get_entry():
     # make a variable to store path
     # output.config(text=pathLocation)
 
-    output.config(text=audioTitle + " "
-                       + lyrics + " "
-                       + str(beatMode) + " "
-                       + str(mode) + " "
-                       + str(bpm) + " "
-                       + str(syllableLength) + " "
-                       + str(volumeSlider.get()))
+    # output.config(text=audioTitle + " "
+    #                    + lyrics + " "
+    #                    + str(beatMode) + " "
+    #                    + str(mode) + " "
+    #                    + str(bpm) + " "
+    #                    + str(syllableLength) + " "
+    #                    + str(volumeSlider.get()))
 
 
 # Make space for the window
@@ -72,7 +143,7 @@ rightFrame = tk.Frame(root, padx=25, pady=10)
 buttonFrame = tk.Frame(root, padx=25, pady=10)
 
 # Instructions
-instructions = tk.Label(instructionFrame, text='Welcome! Enter lyrics (no special characters) into the box below')
+instructions = tk.Label(instructionFrame, text='Welcome! Enter lyrics (no special characters or numbers) into the box below')
 instructions.pack()
 
 # Title name input
