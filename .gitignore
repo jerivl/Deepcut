@@ -1,7 +1,7 @@
-
-flowtron/
 *.wav
-*.wav
-*.TextGrid
-*.TextGrid
+*.avi
+*.gif
 *.mp4
+*.pt
+*.TextGrid
+flowtron/
