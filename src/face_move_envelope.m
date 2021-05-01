@@ -55,8 +55,9 @@ function [vidFile] = create_face_vid(rapFile, gifFile)
     ims = zeros(720,720,3,length(fmvmt));
     try
         parpool(4);
+    catch
+        warning('Not sure if parfor will break');
     end
-        warning('Not sure if parfor will break')
     parfor i = 1:length(fmvmt)
         h =figure('Renderer', 'painters', 'Position', [10 10  900 899], 'visible', 'off') ;
         a = axes('Position',[0.1 0.1 0.8 0.8]); % for 720 x 720 output from 900 x 900 figure

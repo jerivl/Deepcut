@@ -21,7 +21,7 @@ from Issue1_PhonemeToSyllables import get_phoneme, phoneme_to_syllable
 def split_into_syllables(wav_file, xmin, xmax, save_fldr):
     #file_name = wav_file.split(sep='/')
     #file_name = file_name[-1].split(sep='.')
-    file_name = wav_file.name
+    file_name = wav_file.stem
 
     [sample_rate, data] = wavfile.read(wav_file)
     length = data.shape[0]/sample_rate
