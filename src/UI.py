@@ -1,7 +1,7 @@
 """
     Modification History:
         Date: 4/30/2021
-        Time: 5:30PM
+        Time: 9:15PM
     Description:
         User Interface for the robot. It will allow the user to input their desire lyrics and choose
         what beat, mode, BPM, and syllable length for their rap. The user is also able to increase
@@ -72,7 +72,7 @@ rightFrame = tk.Frame(root, padx=25, pady=10)
 buttonFrame = tk.Frame(root, padx=25, pady=10)
 
 # Instructions
-instructions = tk.Label(instructionFrame, text='Welcome! Enter lyrics into the box below')
+instructions = tk.Label(instructionFrame, text='Welcome! Enter lyrics (no special characters) into the box below')
 instructions.pack()
 
 # Title name input
