@@ -7,7 +7,7 @@ from Issue5_SplitAudio import split_into_syllables
 from Issue4_ImplementFrequencyPreservingTimeScaling import time_stretching
 
 
-def aligner_to_rap(audio_file_list, textgrid_file_list, save_fldr, bpm=100, sylLen=1, method=1):
+def aligner_to_rap(audio_file_list, textgrid_file_list, save_fldr, bpm=100, sylLen=1, method=1, volume=1):
     syl_files = []
     for text_pnt in range(len(audio_file_list)):
         [phonemes, start_times, end_times] = get_phoneme(textgrid_file_list[text_pnt])
@@ -122,6 +122,7 @@ def aligner_to_rap(audio_file_list, textgrid_file_list, save_fldr, bpm=100, sylL
         DATA = np.concatenate([DATA,data_b])
         count = count2
 
+    DATA = volume*DATA
     file_name = save_fldr / (str(audio_file_list[0].stem) + '_Rap_bpm=' + str(bpm) + '_method=' + str(method) + \
                 '_sylLen=' + str(sylLen) + '_Accapela.wav')
     wavfile.write(file_name, sample_rate, DATA)
