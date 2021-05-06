@@ -123,7 +123,7 @@ def get_entry():
                 with open('output.txt','r') as out_txt:
                     output_file = out_txt.read()
                 output.config(text=output_file)
-                sendRPI(output_file)
+                # sendRPI(output_file)
     else:
         # Input is rap lyrics
         # Check if transcript has any special characters
@@ -137,7 +137,7 @@ def get_entry():
         with open('output.txt','r') as out_txt:
             output_file = out_txt.read()
         output.config(text=output_file)
-        sendRPI(output_file)
+        # sendRPI(output_file)
         
 
     # add command here add user input as arguements for other scripts
