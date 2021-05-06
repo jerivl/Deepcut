@@ -1,7 +1,7 @@
 """
     Modification History:
-        Date: 4/30/2021
-        Time: 11:00PM
+        Date: 5/05/2021
+        Time: 8:00PM
     Description:
         User Interface for the robot. It will allow the user to input their desire lyrics and choose
         what beat, mode, BPM, and syllable length for their rap. The user is also able to increase
@@ -26,6 +26,7 @@
         If output line/frame is not needed then delete that have to do anything with output or out
 """
 import tkinter as tk
+from tkinter import Text
 import os
 from pathlib import Path
 from SendFinal import sendRPI
@@ -35,12 +36,34 @@ root = tk.Tk()
 root.title("Deepcut")
 root.geometry("600x300")
 
+
+class Test(Text):
+    def __init__(self, master, **kw):
+        Text.__init__(self, master, **kw)
+        self.bind('<Control-c>', self.copy)
+        self.bind('<Control-x>', self.cut)
+        self.bind('<Control-v>', self.paste)
+
+    def copy(self, event=None):
+        self.clipboard_clear()
+        text = self.get("sel.first", "sel.last")
+        self.clipboard_append(text)
+
+    def cut(self, event):
+        self.copy()
+        self.delete("sel.first", "sel.last")
+
+    def paste(self, event):
+        text = self.selection_get(selection='CLIPBOARD')
+        self.insert('insert', text)
+
+
 def remover(inLyrics):
     # split by spaces
     words = inLyrics.split(' ')
     outLyrics = ''
     for w in range(len(words)):
-        word = str(words[w].strip)
+        word = words[w].strip()
         if not word.isalpha():
             new_word = ''
             for c in range(len(word)):
@@ -56,8 +79,8 @@ def detector(inLyrics):
     words = inLyrics.split(' ')
     invalid = 0
     w = 0
-    while not invalid:
-        word = str(words[w].strip)
+    while not invalid and w < len(words):
+        word = words[w].strip()
         if not word.isalpha():
             invalid = 1
         w = w + 1
@@ -79,13 +102,13 @@ def get_entry():
 
     # Input validation
     secret_code = "MAKE ME RAP "
-    if audioTitle[0:12] is secret_code and len(audioTitle) > 12:
+    if audioTitle[0:12] in secret_code and len(audioTitle) > 12:
         # Input is a speech file
         audio_file = Path(audioTitle[12:len(audioTitle)])
         extension = audio_file.suffix
         # Check if file exists
-        if not Path.is_file(audio_file) or extension != Path('.wav'):
-            error_message = 'The path specified for the audio file does not exist or is not a .wav file'
+        if not Path.is_file(audio_file) or extension != '.wav':
+            error_message = 'The full path specified for the audio file does not exist or is not a .wav file'
             output.config(text=error_message)
         else:
             # Check if transcript has any special characters
@@ -94,7 +117,8 @@ def get_entry():
                 output.config(text=error_message)
             else:
                 # Run rap generation
-                cmd = 'python GenerateRap_UserSpeech.py "%s" "%s" %d %d %d %f %f' % (str(audio_file), lyrics, mode, beatMode, bpm, syllableLength, volume) 
+                # print('Run')
+                cmd = 'python GenerateRap_UserSpeech.py "%s" "%s" %d %d %d %f %f' % (str(audio_file), lyrics, mode, beatMode, bpm, syllableLength, volume)
                 os.system(cmd)
                 with open('output.txt','r') as out_txt:
                     output_file = out_txt.read()
@@ -107,7 +131,8 @@ def get_entry():
         print(lyrics)
         title = audioTitle.replace(" ", "_")
         # Run rap generation
-        cmd = 'python GenerateRap.py "%s" "%s" %d %d %d %f %f' % (title, lyrics, mode, beatMode, bpm, syllableLength, volume) 
+        # print('Run')
+        cmd = 'python GenerateRap.py "%s" "%s" %d %d %d %f %f' % (title, lyrics, mode, beatMode, bpm, syllableLength, volume)
         os.system(cmd)
         with open('output.txt','r') as out_txt:
             output_file = out_txt.read()
@@ -223,4 +248,9 @@ centerFrame.pack(side=tk.LEFT)
 rightFrame.pack(side=tk.LEFT)
 buttonFrame.pack(side=tk.LEFT)
 
+# copy and paste
+copyPaste = Test(root)
+copyPaste.pack(fill='both', expand=1)
+
 root.mainloop()
+
