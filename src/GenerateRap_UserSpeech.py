@@ -142,7 +142,7 @@ if __name__ == "__main__":
     print(str(Path.cwd()))
     eng.cd(str(Path.cwd()))
     beat = "/home/deepcut/deepcut/resource/beat" + str(beat_num) + ".wav"
-    face = "/home/deepcut/deepcut/resource/Face_005.gif"
+    face = "/home/deepcut/deepcut/resource/Face_004_gr.gif"
     [vidFile, mixFile] = eng.face_move_envelope(str(vocal), str(beat), str(face), nargout=2)
     vidFile = Path(vidFile)
     mixFile = Path(mixFile)
@@ -151,5 +151,6 @@ if __name__ == "__main__":
     cmd = "ffmpeg -i %s -i %s -c:v h264 -c:a aac %s -y" % (vidFile, mixFile, vocal.parent / (str(vidFile.stem) + ".mp4"))
     print(cmd)
     os.system(cmd)
-    print("%s" % (vocal.parent / (str(vidFile.stem) + ".mp4")))
+    with open('output.txt','w') as out_txt:
+        out_txt.write(str(vocal.parent / (str(vidFile.stem) + ".mp4")))
 

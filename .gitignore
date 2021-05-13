@@ -1,7 +1,8 @@
 *.wav
 *.avi
-*.gif
 *.mp4
 *.pt
 *.TextGrid
+*.pyc
+*.txt
 flowtron/

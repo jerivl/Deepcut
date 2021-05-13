@@ -107,7 +107,7 @@ if __name__ == "__main__":
     inference_path = (Path.cwd().parent).joinpath("flowtron","inference.py")
     config_path = (Path.cwd().parent).joinpath("flowtron","config.json")
     flowtron_model = (Path.cwd().parent).joinpath("resource","models","flowtron_ljs.pt")
-    waveglow_model = (Path.cwd().parent).joinpath("resource","models","waveglow_256channels_v5.pt")
+    waveglow_model = (Path.cwd().parent).joinpath("resource","models","waveglow_256channels_universal_v5.pt")
     print(waveglow_model,Path.is_file(flowtron_model))
     if not Path.is_file(flowtron_model):
         raise FileNotFoundError("Ensure that the Flowtron model exists at %s" % str(flowtron_model.parent))
@@ -117,6 +117,7 @@ if __name__ == "__main__":
 
 
     # Split text
+    text = text.strip()
     words = text.split(sep=' ')
     w_num = int(len(words))
     rows = int(np.ceil(w_num / 10))
@@ -217,13 +218,15 @@ if __name__ == "__main__":
     print(str(Path.cwd()))
     eng.cd(str(Path.cwd()))
     beat = "/home/deepcut/deepcut/resource/beat" + str(beat_num) + ".wav"
-    face = "/home/deepcut/deepcut/resource/Face_005.gif"
-    [vidFile, mixFile] = eng.face_move_envelope(str(vocal), str(beat), str(face), nargout=2)
+    face = "/home/deepcut/deepcut/resource/Face_004_gr.gif"
+    [vidFile, mixFile] = eng.face_move_envelope(str(vocal), str(beat), str(face), str(bpm), nargout=2)
     vidFile = Path(vidFile)
     mixFile = Path(mixFile)
     print(vidFile,mixFile)
     # Re-encode video with audio
-    cmd = "ffmpeg -i %s -i %s -c:v h264 -c:a aac %s -y" % (vidFile, mixFile, vocal.parent / (str(vidFile.stem) + ".mp4"))
+    cmd = "ffmpeg -i %s -i %s -vf scale=720x720 -sws_flags neighbor -sws_dither none -c:v h264 -c:a aac %s -y" % (vidFile, mixFile, vocal.parent / (str(vidFile.stem) + ".mp4"))
     print(cmd)
     os.system(cmd)
-    print("%s" % (vocal.parent / (str(vidFile.stem) + ".mp4")))
+    with open('output.txt','w') as out_txt:
+        out_txt.write(str(vocal.parent / (str(vidFile.stem) + ".mp4")))
+    
