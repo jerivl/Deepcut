@@ -1,1 +1,0 @@
-/home/deepcut/deepcut/results/test_0_Rap_bpm=100_method=4_sylLen=0.5_Accapela+Face_004_gr.mp4
