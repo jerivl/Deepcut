@@ -7,7 +7,7 @@ import numpy as np
 
 def sendRPI(filename):
     s = socket.socket()
-    host = socket.gethostbyname("192.168.10.23") # ip address of rpi
+    host = socket.gethostbyname("192.168.1.7") # ip address of rpi
     port = 3333
     s.connect((host, port))
     print("Connected")

@@ -1,31 +1,40 @@
-function [vidFile, mixFile] = face_move_envelope(rapFile, beatFile, gifFile)
+function [vidFile, mixFile] = face_move_envelope(rapFile, beatFile, gifFile, bpm)
+    bpm = str2num(bpm);
     [rapPath,~] = fileparts(rapFile);
     [beatPath,~] = fileparts(beatFile);
     [gifPath,~] = fileparts(gifFile);
     addpath(rapPath, beatPath, gifPath);
-
-    % create_face_vid('/home/deepcut/flowtron/results/rapsid0_sigma0.5.wavsid0_sigma0.5.wav_Rap_bpm=100_subpb=4_sylLen=1_Accapela.wav',...
-    %     '/home/deepcut/flowtron/results/rap.avi');
-    vidFile = create_face_vid(rapFile, gifFile);
-    mixFile = mix_beat(rapFile, beatFile);
-end
-
-function [mixFile] = mix_beat(rapFile, beatFile)
-    [rap, ~] = audioread(rapFile);
+    
+    [rap, FSr] = audioread(rapFile);
     [beat, FSb] = audioread(beatFile);
     [rapPath,rapName,rapExt] = fileparts(rapFile);
     [~,beatName,~] = fileparts(beatFile);
+    
+    % Pad rap with one measure of silence at beginning and end
+    measureLen = 4 * FSr * 60 / bpm;
+    pad = zeros(round(measureLen),1);
+    rap = [pad; rap; pad];
+    
+    % Define output filename
+    [~,gifName,~] = fileparts(gifFile);
+    vidFile = fullfile(rapPath, [rapName '+' gifName '.avi']);
     mixFile = fullfile(rapPath, [rapName beatName rapExt]);
-    rap = resample(rap,441,160);
-    mix = rap + beat(1:length(rap)) / 2;
+    
+    mix_beat(mixFile, rap, beat, FSr, FSb);
+    create_face_vid(vidFile, rap, FSr, gifFile);
+end
+
+function mix_beat(mixFile, rap, beat, FSr, FSb)
+    
+    rap = resample(rap,FSb,FSr);
+    beat = [beat; beat];
+    mix = 0.5.*rap + beat(1:length(rap)) / 2;
     audiowrite(mixFile,mix,FSb)
 end
 
 
-function [vidFile] = create_face_vid(rapFile, gifFile)
+function  create_face_vid(vidFile, vocal, Fs, gifFile)
     out_FPS = 60;
-
-    [vocal,Fs] = audioread(rapFile);
 
     % Take envelope and smooth
     dRC = compressor(-25,10,'AttackTime',0,'ReleaseTime',0);
@@ -46,21 +55,21 @@ function [vidFile] = create_face_vid(rapFile, gifFile)
     [bank,map] = imread(gifFile,'frames','all');
     bank = bank(:,:,:,1:4);
     
-    % Define output filename
-    [rapPath,rapName,~] = fileparts(rapFile);
-    [~,gifName,~] = fileparts(gifFile);
-    vidFile = fullfile(rapPath, [rapName '+' gifName '.avi']);
-    
+ 
     % Write video as .avi for later reencoding
-    ims = zeros(720,720,3,length(fmvmt));
+    % ims = zeros(720,720,3,length(fmvmt));
+    ims = zeros(36,36,3,length(fmvmt));
+    outdim = size(ims);
     try
         parpool(4);
     catch
         warning('Not sure if parfor will break');
     end
     parfor i = 1:length(fmvmt)
-        h =figure('Renderer', 'painters', 'Position', [10 10  900 899], 'visible', 'off') ;
+        %h =figure('Renderer', 'painters', 'Position', [10 10  900 899], 'visible', 'off') ;
+        h =figure('Renderer', 'painters', 'Position', [10 10 44 45 ], 'visible', 'off') ;
         a = axes('Position',[0.1 0.1 0.8 0.8]); % for 720 x 720 output from 900 x 900 figure
+                                                % for 36x36 output from 45x45 figure?
         axis tight manual;
     
         curface = bank(:,:,:,fmvmt(i));
@@ -69,7 +78,8 @@ function [vidFile] = create_face_vid(rapFile, gifFile)
 
         % Capture the plot as an image
         frame = getframe(a);
-        ims(:,:,:,i) = frame2im(frame);
+        im = frame2im(frame)
+        ims(:,:,:,i) = im(2:end,:,:); % Indexing because padding from fig still present
         close(h)
     end
     

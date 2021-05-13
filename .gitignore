@@ -4,4 +4,5 @@
 *.pt
 *.TextGrid
 *.pyc
+*.txt
 flowtron/
